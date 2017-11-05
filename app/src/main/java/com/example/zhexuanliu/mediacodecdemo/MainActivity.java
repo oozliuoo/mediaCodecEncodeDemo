@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.graphics.ImageFormat;
+import android.graphics.YuvImage;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
@@ -39,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
     // parameters for the encoder
     private static final String MIME_TYPE = "video/avc";    // H.264 Advanced Video Coding
-    private static final int FRAME_RATE = 15;               // 15fps
-    private static final int IFRAME_INTERVAL = 10;          // 10 seconds between I-frames
+    private static final int FRAME_RATE = 30;               // 30 fps
+    private static final int IFRAME_INTERVAL = 1;          // 10 seconds between I-frames
 
     private static final boolean VERBOSE = true;           // verbose logging
     private static final boolean DEBUG_SAVE_FILE = true;
@@ -49,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int NUM_FRAMES = 342;               // video length in terms of frame num
 
     // size of a frame, in pixels
-    private int mWidth = 320;
-    private int mHeight = 180;
+    private int mWidth = 1280;
+    private int mHeight = 720;
 
     private int mBitRate = 2 * mWidth * mHeight * FRAME_RATE;
     private static final String DEBUG_FILE_NAME_BASE = "test_encode";
@@ -153,12 +155,12 @@ public class MainActivity extends AppCompatActivity {
         if (DEBUG_SAVE_FILE) {
             // set permission
             verifyStoragePermissions(MainActivity.this);
-            File file = getAlbumStorageDir("encode_test", DEBUG_FILE_NAME_BASE + mWidth + "x" + mHeight + ".mp4");
+            File file = getAlbumStorageDir("encode_test", DEBUG_FILE_NAME_BASE + mWidth + "x" + mHeight + ".h264");
             try {
                 outputStream = new FileOutputStream(file);
-                Log.d(LOG_TAG, "encoded output will be saved as " + DEBUG_FILE_NAME_BASE + mWidth + "x" + mHeight + ".mp4");
+                Log.d(LOG_TAG, "encoded output will be saved as " + DEBUG_FILE_NAME_BASE + mWidth + "x" + mHeight + ".h264");
             } catch (IOException ioe) {
-                Log.w(LOG_TAG, "Unable to create debug output file " + DEBUG_FILE_NAME_BASE + mWidth + "x" + mHeight + ".mp4");
+                Log.w(LOG_TAG, "Unable to create debug output file " + DEBUG_FILE_NAME_BASE + mWidth + "x" + mHeight + ".h264");
                 throw new RuntimeException(ioe);
             }
         }
@@ -329,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
         // read input
         byte[] source = null;
         try {
-            is = am.open("yuvTest/scaled" + (index + 1) + ".yuv");
+            is = am.open("yuvTest/origin" + (index + 1) + ".yuv");
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             byte[] buffer = new byte[0xFFFF];
 
